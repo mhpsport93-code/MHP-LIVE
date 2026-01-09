@@ -307,7 +307,7 @@
     height: 68px;
   }
 
-  /* ✅ header height variable for pages */
+
   :root {
     --header-height: 68px;
   }
@@ -795,7 +795,7 @@
       background: linear-gradient(to left, rgba(0,0,0,0.8), transparent);
     }
 
-    /* ==================== MOVIE CARD ==================== */
+    /* ==================== CONTENT CARD ==================== */
     .movie-card {
       flex-shrink: 0;
       scroll-snap-align: start;
@@ -959,7 +959,7 @@
   padding-top: 0;
 }
 
-/* ==================== BANNER ==================== */
+
 .details-banner {
   position: relative;
   width: 100%;
@@ -975,7 +975,6 @@
   }
 }
 
-/* ==================== BACKDROP IMAGE ==================== */
 .details-backdrop {
   position: absolute;
   inset: 0;
@@ -985,7 +984,6 @@
   background-color: var(--bg-dark);
 }
 
-/* ==================== SEAM KILLER OVERLAY (ONLY SAFE WAY) ==================== */
 .details-banner::after {
   content: "";
   position: absolute;
@@ -1679,7 +1677,7 @@
       border-color: var(--primary);
     }
 
-    /* Theme Colors */
+   
     .theme-colors {
       display: flex;
       gap: 12px;
@@ -1783,7 +1781,7 @@
       transform: translateY(-2px);
     }
 
-    /* ==================== PLAYER MODAL ==================== */
+    /* ==================== PLAYER ==================== */
     .player-modal {
       position: fixed;
       inset: 0;
@@ -1927,13 +1925,13 @@
   </style>
 </head>
 <body class="no-scroll">
-  <!-- Loading Overlay -->
+  
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-logo">STREAMFLIX</div>
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- Language Selection Popup -->
+  
   <div class="language-overlay" id="languageOverlay">
     <div class="language-popup">
       <div class="language-popup-logo">STREAMFLIX</div>
@@ -1975,21 +1973,21 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  
   <main id="mainContent">
-    <!-- Home Page -->
+    
     <div class="page active" id="homePage">
-      <!-- Hero Section -->
+      
       <section class="hero" id="heroSection">
         <div class="hero-slider" id="heroSlider"></div>
         <div class="hero-indicators" id="heroIndicators"></div>
       </section>
 
-      <!-- Content Rows -->
+      
       <section class="content-section" id="contentRows"></section>
     </div>
 
-    <!-- Details Page -->
+    
     <div class="page" id="detailsPage">
       <div class="details-banner" id="detailsBanner">
         <div class="details-backdrop" id="detailsBackdrop"></div>
@@ -2005,7 +2003,7 @@
       </div>
     </div>
 
-    <!-- Search Page -->
+    
     <div class="page" id="searchPage">
       <div class="search-container">
         <div class="search-input-wrapper">
@@ -2020,7 +2018,7 @@
       <div class="search-grid" id="searchGrid"></div>
     </div>
 
-    <!-- Bookmarks Page -->
+    
     <div class="page" id="bookmarksPage">
       <div class="bookmarks-header">
         <h1 class="bookmarks-title">My List</h1>
@@ -2029,7 +2027,7 @@
       <div class="bookmarks-grid" id="bookmarksGrid"></div>
     </div>
 
-    <!-- Settings Page -->
+    
     <div class="page" id="settingsPage">
       <div class="settings-header">
         <h1 class="settings-title">Settings</h1>
@@ -2039,7 +2037,7 @@
     </div>
   </main>
 
-  <!-- Bottom Navigation -->
+  
   <nav class="bottom-nav" id="bottomNav">
     <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
       <i class="fas fa-home"></i>
@@ -2059,7 +2057,7 @@
     </button>
   </nav>
 
-  <!-- Player Modal -->
+  
   <div class="player-modal" id="playerModal">
     <button class="player-close" onclick="closePlayer()">
       <i class="fas fa-times"></i>
@@ -2067,7 +2065,7 @@
     <iframe class="player-iframe" id="playerIframe" allowfullscreen></iframe>
   </div>
 
-  <!-- Toast Container -->
+  
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
@@ -2232,73 +2230,57 @@
     }
 
     // ==================== NAVIGATION ====================
-    function navigateTo(page, pushState = true) {
-      const pages = ['home', 'search', 'bookmarks', 'settings', 'details'];
-      if (!pages.includes(page)) return;
-      
-      state.previousPage = state.currentPage;
-      state.currentPage = page;
-      
-      if (pushState && page !== 'details') {
-        const url = page === 'home' ? '/' : `/${page}`;
-        history.pushState({ page }, '', url);
-      }
-      
-      document.querySelectorAll('.page').forEach(p => {
-        const isTarget = p.id === `${page}Page`;
-        if (isTarget) {
-          p.classList.remove('exit');
-          p.classList.add('active');
-        } else if (p.classList.contains('active')) {
-          p.classList.add('exit');
-          setTimeout(() => {
-            p.classList.remove('active', 'exit');
-          }, 150);
-        }
-      });
-      
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.toggle('active', item.dataset.page === page);
-      });
-      
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      if (page === 'search') {
-        setTimeout(() => document.getElementById('searchInput')?.focus(), 300);
-        loadPopularSearches();
-      } else if (page === 'bookmarks') {
-        loadBookmarks();
-      } else if (page === 'settings') {
-        loadSettings();
-      }
-    }
+function navigateTo(page, pushState = true) {
+  const pages = ['home', 'search', 'bookmarks', 'settings', 'details'];
+  if (!pages.includes(page)) return;
 
-    function goBack() {
-      if (window.history.length > 1) {
-        history.back();
-      } else if (state.previousPage && state.previousPage !== 'details') {
-        navigateTo(state.previousPage);
-      } else {
-        navigateTo('home');
-      }
-    }
+  state.previousPage = state.currentPage;
+  state.currentPage = page;
 
-    window.addEventListener('popstate', (e) => {
-      if (e.state) {
-        if (e.state.type && e.state.id) {
-          openDetails(e.state.id, e.state.type, false);
-        } else if (e.state.page) {
-          navigateTo(e.state.page, false);
-        }
-      } else {
-        const path = window.location.pathname;
-        if (path === '/' || path === '') {
-          navigateTo('home', false);
-        } else {
-          handleDeepLink();
-        }
-      }
-    });
+  
+
+  document.querySelectorAll('.page').forEach(p => {
+    const isTarget = p.id === `${page}Page`;
+    if (isTarget) {
+      p.classList.remove('exit');
+      p.classList.add('active');
+    } else if (p.classList.contains('active')) {
+      p.classList.add('exit');
+      setTimeout(() => {
+        p.classList.remove('active', 'exit');
+      }, 150);
+    }
+  });
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.page === page);
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (page === 'search') {
+    setTimeout(() => document.getElementById('searchInput')?.focus(), 300);
+    loadPopularSearches();
+  } else if (page === 'bookmarks') {
+    loadBookmarks();
+  } else if (page === 'settings') {
+    loadSettings();
+  }
+}
+
+// ==================== BACK ====================
+function goBack() {
+  if (window.history.length > 1) {
+    history.back();
+  } else {
+    navigateTo('home');
+  }
+}
+
+// ==================== POPSTATE====================
+window.addEventListener('popstate', () => {
+  handleDeepLink(); 
+});
 
     // ==================== HERO SLIDER ====================
     function createHeroSlide(item, index) {
@@ -2470,7 +2452,6 @@ async function loadHomeContent() {
   const heroIndicators = document.getElementById('heroIndicators');
   const contentRows = document.getElementById('contentRows');
 
-  // Skeletons
   contentRows.innerHTML = [
     createSkeletonRow('Trending Now'),
     createSkeletonRow('Indian Movies'),
@@ -2487,10 +2468,9 @@ async function loadHomeContent() {
       indianAction,
       indianComedy
     ] = await Promise.all([
-      // Hero + Trending (global allowed)
       fetchTMDB('/trending/all/week'),
 
-      // 🇮🇳 Indian Movies ONLY (all Indian languages)
+
       fetchTMDB('/discover/movie', {
         with_origin_country: 'IN',
         sort_by: 'popularity.desc',
@@ -2498,13 +2478,13 @@ async function loadHomeContent() {
         page: 1
       }),
 
-      // Top Rated (can be global)
+      
       fetchTMDB('/movie/top_rated'),
 
-      // TV Series (can be global)
+      
       fetchTMDB('/tv/popular'),
 
-      // 🇮🇳 Indian Action Movies
+      
       fetchTMDB('/discover/movie', {
         with_origin_country: 'IN',
         with_genres: '28',
@@ -2512,7 +2492,7 @@ async function loadHomeContent() {
         include_adult: false
       }),
 
-      // 🇮🇳 Indian Comedy Movies
+      
       fetchTMDB('/discover/movie', {
         with_origin_country: 'IN',
         with_genres: '35',
@@ -2540,8 +2520,6 @@ async function loadHomeContent() {
     // ================= CONTENT ROWS =================
     contentRows.innerHTML = [
       createMovieRow('Trending Now', trending?.results, 'fa-fire', 'backdrop'),
-
-      // 🇮🇳 ONLY INDIAN MOVIES
       createMovieRow('Indian Movies', indianMovies?.results, 'fa-flag', 'poster'),
 
       createMovieRow('Top Rated', topRated?.results, 'fa-trophy', 'poster'),
@@ -2584,13 +2562,12 @@ async function loadHomeContent() {
         
         state.currentDetails = details;
         
-        const title = details.title || details.name || 'untitled';
-        const slug = createSlug(title, id);
-        const url = `/${type}/${slug}`;
+        const url = `#/${type}/${id}`;
         
         if (pushState) {
-          history.pushState({ type, id, slug }, `${title} - StreamFlix`, url);
-        }
+  history.pushState({ type, id }, '', url);
+}
+
         
         renderDetails(details, type);
         
@@ -2847,10 +2824,10 @@ async function loadHomeContent() {
   let url;
 
   if (type === 'tv') {
-    // TV → iframe ke andar
+    
     url = `${server.base}/tv/${id}/${state.selectedSeason}/${state.selectedEpisode}`;
   } else {
-    // Movie → iframe ke andar
+    
     url = `${server.base}/movie/${id}`;
   }
 
@@ -3072,7 +3049,7 @@ async function loadHomeContent() {
     // ==================== SHARE ====================
     async function shareItem(id, type, title) {
       const slug = createSlug(title, id);
-      const url = `${window.location.origin}/${type}/${slug}`;
+      const url = `${window.location.origin}/#/${type}/${slug}`;
       
       if (navigator.share) {
         try {
@@ -3099,7 +3076,7 @@ async function loadHomeContent() {
       });
     }
 
-    // ==================== HEADER SCROLL ====================
+    // ==================== HEADER ====================
     function handleScroll() {
       const header = document.getElementById('header');
       header.classList.toggle('scrolled', window.scrollY > 50);
@@ -3109,100 +3086,92 @@ async function loadHomeContent() {
 
     // ==================== DEEP LINKING ====================
     function handleDeepLink() {
-  // Blogger me pathname kaam nahi karta
-  // Hash routing (#) hi kaam karta hai
   const hash = window.location.hash || '';
-
-  // 🎬 Movie / TV Details
   if (hash.startsWith('#/movie/') || hash.startsWith('#/tv/')) {
     const parts = hash.replace('#/', '').split('/');
-    const type = parts[0]; // movie | tv
+    const type = parts[0]; 
     const slug = parts[1];
     const id = parseSlug(slug);
 
     if (id) {
-      navigateTo('details', false); // details page activate
-      openDetails(id, type, false); // same details load
+      navigateTo('details', false); 
+      openDetails(id, type, false); 
       return true;
     }
   }
 
-  // 🔍 Search
+  
   if (hash === '#/search') {
     navigateTo('search', false);
     return true;
   }
 
-  // ⭐ Bookmarks
+  
   if (hash === '#/bookmarks') {
     navigateTo('bookmarks', false);
     return true;
   }
 
-  // ⚙️ Settings
+  
   if (hash === '#/settings') {
     navigateTo('settings', false);
     return true;
   }
 
-  // 🏠 Home (default)
+  
   navigateTo('home', false);
   return false;
 }
 
     // ==================== INITIALIZATION ====================
-    async function init() {
-      if (state.themeColor && state.themeColor !== 'red') {
-        setThemeColor(state.themeColor);
-      }
-      
-      document.getElementById('headerAvatar').textContent = state.profileName.charAt(0).toUpperCase();
-      
-      const path = window.location.pathname;
-      const isDeepLink = path.startsWith('/movie/') || path.startsWith('/tv/');
-      
-      if (isDeepLink) {
-        const handled = handleDeepLink();
-        if (handled) {
-          loadHomeContent();
-          setTimeout(() => {
-            document.getElementById('loadingOverlay').classList.add('hide');
-            document.body.classList.remove('no-scroll');
-          }, 500);
-          return;
-        }
-      }
-      
-      if (path === '/search') {
-        await loadHomeContent();
-        navigateTo('search', false);
-      } else if (path === '/bookmarks') {
-        await loadHomeContent();
-        navigateTo('bookmarks', false);
-      } else if (path === '/settings') {
-        await loadHomeContent();
-        navigateTo('settings', false);
-      } else {
-        await loadHomeContent();
-        history.replaceState({ page: 'home' }, '', '/');
-      }
-      
-      setTimeout(() => {
-        document.getElementById('loadingOverlay').classList.add('hide');
-        document.body.classList.remove('no-scroll');
-      }, 500);
+async function init() {
+ 
+  if (state.themeColor && state.themeColor !== 'red') {
+    setThemeColor(state.themeColor);
+  }
+
+  
+  document.getElementById('headerAvatar').textContent =
+    state.profileName.charAt(0).toUpperCase();
+
+  
+  
+  if (location.hash) {
+    handleDeepLink();
+
+    setTimeout(() => {
+      document.getElementById('loadingOverlay').classList.add('hide');
+      document.body.classList.remove('no-scroll');
+    }, 500);
+
+    return; 
+  }
+
+  
+  await loadHomeContent();
+  navigateTo('home', false);
+
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.add('hide');
+    document.body.classList.remove('no-scroll');
+  }, 500);
+}
+
+
+document.addEventListener('DOMContentLoaded', init);
+
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const player = document.getElementById('playerModal');
+    if (player.classList.contains('active')) {
+      closePlayer();
     }
-
-    document.addEventListener('DOMContentLoaded', init);
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const player = document.getElementById('playerModal');
-        if (player.classList.contains('active')) {
-          closePlayer();
-        }
-      }
-    });
+  }
+});
   </script>
 </body>
 </html>
+
+
+
