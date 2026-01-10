@@ -307,7 +307,7 @@
     height: 68px;
   }
 
-
+ 
   :root {
     --header-height: 68px;
   }
@@ -795,7 +795,7 @@
       background: linear-gradient(to left, rgba(0,0,0,0.8), transparent);
     }
 
-    /* ==================== CONTENT CARD ==================== */
+    /* ==================== MOVIE CARD ==================== */
     .movie-card {
       flex-shrink: 0;
       scroll-snap-align: start;
@@ -959,6 +959,7 @@
   padding-top: 0;
 }
 
+/* ==================== BANNER ==================== */
 
 .details-banner {
   position: relative;
@@ -973,8 +974,14 @@
   .details-banner {
     height: 70vh;
   }
+  .details-poster {
+    display: none !important;
+  }
+  .details-content {
+    grid-template-columns: 1fr !important;
+  }
 }
-
+/* ==================== BACKDROP IMAGE ==================== */
 .details-backdrop {
   position: absolute;
   inset: 0;
@@ -983,6 +990,7 @@
   background-repeat: no-repeat;
   background-color: var(--bg-dark);
 }
+
 
 .details-banner::after {
   content: "";
@@ -1370,6 +1378,17 @@
       overflow: hidden;
     }
 
+.episode-thumb {
+  width: 120px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #141414;
+}
+
+
+.episode-thumb.hide {
+  display: none;
+}
     /* ==================== SEARCH PAGE ==================== */
 .search-container {
   padding: 0 16px 20px;
@@ -1677,7 +1696,7 @@
       border-color: var(--primary);
     }
 
-   
+    /* Theme Colors */
     .theme-colors {
       display: flex;
       gap: 12px;
@@ -1781,7 +1800,7 @@
       transform: translateY(-2px);
     }
 
-    /* ==================== PLAYER ==================== */
+    /* ==================== PLAYER MODAL ==================== */
     .player-modal {
       position: fixed;
       inset: 0;
@@ -1922,6 +1941,104 @@
     /* ==================== UTILITY CLASSES ==================== */
     .text-center { text-align: center; }
     .hidden { display: none !important; }
+    
+    /* ==================== TELEGRAM JOIN POPUP ==================== */
+.telegram-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5); 
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.telegram-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.telegram-card {
+  width: 90%;
+  max-width: 360px;
+  background: #141414;
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  animation: telegramPop 0.35s ease;
+}
+
+.telegram-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #229ED9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #fff;
+}
+
+.telegram-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.telegram-text {
+  font-size: 14px;
+  color: #b3b3b3;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.telegram-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.telegram-btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.telegram-btn.join {
+  background: #229ED9;
+  color: #fff;
+}
+
+.telegram-btn.join:hover {
+  background: #1c8ac3;
+  transform: scale(1.05);
+}
+
+.telegram-btn.later {
+  background: #2a2a2a;
+  color: #ccc;
+}
+
+.telegram-btn.later:hover {
+  background: #333;
+}
+
+@keyframes telegramPop {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
   </style>
 </head>
 <body class="no-scroll">
@@ -1964,12 +2081,12 @@
 
   <!-- Header -->
   <header class="header" id="header">
-    <a href="#" class="header-logo" onclick="navigateTo('home'); return false;">STREAMFLIX</a>
+    <a href="/" class="header-logo" onclick="navigateTo('home'); return false;">STREAMFLIX</a>
     <div class="header-right">
       <button class="search-toggle" onclick="navigateTo('search')">
         <i class="fas fa-search"></i>
       </button>
-      <div class="header-avatar" id="headerAvatar">U</div>
+      <div class="header-avatar" id="headerAvatar">S</div>
     </div>
   </header>
 
@@ -1977,7 +2094,6 @@
   <main id="mainContent">
     
     <div class="page active" id="homePage">
-      
       <section class="hero" id="heroSection">
         <div class="hero-slider" id="heroSlider"></div>
         <div class="hero-indicators" id="heroIndicators"></div>
@@ -2027,22 +2143,78 @@
       <div class="bookmarks-grid" id="bookmarksGrid"></div>
     </div>
 
-    
+    <!-- Settings Page -->
     <div class="page" id="settingsPage">
       <div class="settings-header">
         <h1 class="settings-title">Settings</h1>
         <p class="settings-subtitle">Customize your experience</p>
       </div>
       <div class="settings-content" id="settingsContent"></div>
+      <div class="settings-section" style="animation-delay: 0.5s">
+  <h3 class="settings-section-title">Credits</h3>
+
+  <div class="settings-card">
+    <div class="settings-item">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">
+          <i class="fa fa-code"></i>
+        </div>
+        <div>
+          <div class="settings-item-label">Developed By</div>
+          <div class="settings-item-value">MHPUTECH</div>
+        </div>
+      </div>
     </div>
+
+    <div class="settings-item">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">
+          <i class="fa fa-database"></i>
+        </div>
+        <div>
+          <div class="settings-item-label">Data Source</div>
+          <div class="settings-item-value"> Third-party </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">
+          <i class="fa fa-play-circle"></i>
+        </div>
+        <div>
+          <div class="settings-item-label">Player & Streaming</div>
+          <div class="settings-item-value">Third-party Providers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-item-left">
+        <div class="settings-item-icon">
+          <i class="fa fa-info-circle"></i>
+        </div>
+        <div>
+          <div class="settings-item-label">Disclaimer</div>
+          <div class="settings-item-value">
+            This app does not host any content. All data is provided by external APIs.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+    
   </main>
 
-  
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav" id="bottomNav">
-    <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
-      <i class="fas fa-home"></i>
-      <span>Home</span>
-    </button>
+    <button class="nav-item active" data-page="home" onclick="location.hash=''">
+  <i class="fa fa-home"></i>
+  <span>Home</span>
+</button>
     <button class="nav-item" data-page="search" onclick="navigateTo('search')">
       <i class="fas fa-search"></i>
       <span>Search</span>
@@ -2065,7 +2237,7 @@
     <iframe class="player-iframe" id="playerIframe" allowfullscreen></iframe>
   </div>
 
-  
+  <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
@@ -2109,10 +2281,11 @@
 
     // ==================== UTILITY FUNCTIONS ====================
     function getImageUrl(path, size = 'w500') {
-      if (!path) return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="750" fill="%23222"%3E%3Crect width="100%25" height="100%25"/%3E%3Ctext x="50%25" y="50%25" fill="%23666" font-size="20" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
-      return `${CONFIG.IMG_BASE}/${size}${path}`;
-    }
-
+  if (!path) {
+    return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbVfQgzmOXLNGDfXfBSAUwirBBpfCLl4tAtw&s';
+  }
+  return `${CONFIG.IMG_BASE}/${size}${path}`;
+}
     function getBackdropUrl(path) {
       if (!path) return null;
       return `${CONFIG.IMG_BASE}/original${path}`;
@@ -2230,56 +2403,64 @@
     }
 
     // ==================== NAVIGATION ====================
-function navigateTo(page, pushState = true) {
-  const pages = ['home', 'search', 'bookmarks', 'settings', 'details'];
-  if (!pages.includes(page)) return;
-
-  state.previousPage = state.currentPage;
-  state.currentPage = page;
-
-  
-
-  document.querySelectorAll('.page').forEach(p => {
-    const isTarget = p.id === `${page}Page`;
-    if (isTarget) {
-      p.classList.remove('exit');
-      p.classList.add('active');
-    } else if (p.classList.contains('active')) {
-      p.classList.add('exit');
-      setTimeout(() => {
-        p.classList.remove('active', 'exit');
-      }, 150);
+    function navigateTo(page, pushState = true) {
+      const pages = ['home', 'search', 'bookmarks', 'settings', 'details'];
+      if (!pages.includes(page)) return;
+      
+      state.previousPage = state.currentPage;
+      state.currentPage = page;
+      
+      if (pushState && page !== 'details') {
+  const url = page === 'home' ? '#/' : `#/${page}`;
+  history.pushState({ page }, '', url);
+}
+      
+      document.querySelectorAll('.page').forEach(p => {
+        const isTarget = p.id === `${page}Page`;
+        if (isTarget) {
+          p.classList.remove('exit');
+          p.classList.add('active');
+        } else if (p.classList.contains('active')) {
+          p.classList.add('exit');
+          setTimeout(() => {
+            p.classList.remove('active', 'exit');
+          }, 150);
+        }
+      });
+      
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.page === page);
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      if (page === 'search') {
+        setTimeout(() => document.getElementById('searchInput')?.focus(), 300);
+        loadPopularSearches();
+      } else if (page === 'bookmarks') {
+        loadBookmarks();
+      } else if (page === 'settings') {
+        loadSettings();
+      }
     }
-  });
 
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.page === page);
-  });
+    function goBack() {
+      if (window.history.length > 1) {
+        history.back();
+      } else if (state.previousPage && state.previousPage !== 'details') {
+        navigateTo(state.previousPage);
+      } else {
+        navigateTo('home');
+      }
+    }
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  if (page === 'search') {
-    setTimeout(() => document.getElementById('searchInput')?.focus(), 300);
-    loadPopularSearches();
-  } else if (page === 'bookmarks') {
-    loadBookmarks();
-  } else if (page === 'settings') {
-    loadSettings();
-  }
-}
-
-// ==================== BACK ====================
-function goBack() {
-  if (window.history.length > 1) {
-    history.back();
-  } else {
-    navigateTo('home');
-  }
-}
-
-// ==================== POPSTATE====================
+    // ==================== BROWSER BACK / FORWARD ====================
 window.addEventListener('popstate', () => {
-  handleDeepLink(); 
+  if (location.hash) {
+    handleDeepLink();
+  } else {
+    navigateTo('home', false);
+  }
 });
 
     // ==================== HERO SLIDER ====================
@@ -2452,6 +2633,7 @@ async function loadHomeContent() {
   const heroIndicators = document.getElementById('heroIndicators');
   const contentRows = document.getElementById('contentRows');
 
+  
   contentRows.innerHTML = [
     createSkeletonRow('Trending Now'),
     createSkeletonRow('Indian Movies'),
@@ -2461,45 +2643,61 @@ async function loadHomeContent() {
 
   try {
     const [
-      trending,
-      indianMovies,
-      topRated,
-      tvPopular,
-      indianAction,
-      indianComedy
-    ] = await Promise.all([
-      fetchTMDB('/trending/all/week'),
+  trending,
+  indianMovies,
+  topRated,
+  tvPopular,
+  indianAction,
+  indianComedy,
+  kDrama,
+  tvShows,
+  indianOTT,
+  indianTV
+] = await Promise.all([
+  fetchTMDB('/trending/all/week'),
+
+  fetchTMDB('/discover/movie', {
+    with_origin_country: 'IN',
+    sort_by: 'popularity.desc',
+    include_adult: false
+  }),
+
+  fetchTMDB('/movie/top_rated'),
+
+  fetchTMDB('/tv/popular'),
+
+  fetchTMDB('/discover/movie', {
+    with_origin_country: 'IN',
+    with_genres: '28'
+  }),
+
+  fetchTMDB('/discover/movie', {
+    with_origin_country: 'IN',
+    with_genres: '35'
+  }),
+
+  
+  fetchTMDB('/discover/tv', {
+    with_original_language: 'ko',
+    sort_by: 'popularity.desc'
+  }),
+
+  
+  fetchTMDB('/tv/top_rated'),
+
+  
+  fetchTMDB('/discover/tv', {
+    with_origin_country: 'IN',
+    sort_by: 'popularity.desc'
+  }),
 
 
-      fetchTMDB('/discover/movie', {
-        with_origin_country: 'IN',
-        sort_by: 'popularity.desc',
-        include_adult: false,
-        page: 1
-      }),
-
-      
-      fetchTMDB('/movie/top_rated'),
-
-      
-      fetchTMDB('/tv/popular'),
-
-      
-      fetchTMDB('/discover/movie', {
-        with_origin_country: 'IN',
-        with_genres: '28',
-        sort_by: 'popularity.desc',
-        include_adult: false
-      }),
-
-      
-      fetchTMDB('/discover/movie', {
-        with_origin_country: 'IN',
-        with_genres: '35',
-        sort_by: 'popularity.desc',
-        include_adult: false
-      })
-    ]);
+  fetchTMDB('/discover/tv', {
+    with_origin_country: 'IN',
+    with_original_language: 'hi',
+    sort_by: 'vote_count.desc'
+  })
+]);
 
     // ================= HERO SLIDER =================
     const heroItems =
@@ -2519,15 +2717,30 @@ async function loadHomeContent() {
 
     // ================= CONTENT ROWS =================
     contentRows.innerHTML = [
-      createMovieRow('Trending Now', trending?.results, 'fa-fire', 'backdrop'),
-      createMovieRow('Indian Movies', indianMovies?.results, 'fa-flag', 'poster'),
+  createMovieRow('Trending Now', trending?.results, 'fa-fire', 'backdrop'),
 
-      createMovieRow('Top Rated', topRated?.results, 'fa-trophy', 'poster'),
-      createMovieRow('TV Series', tvPopular?.results, 'fa-tv', 'poster'),
+  createMovieRow('Indian Movies', indianMovies?.results, 'fa-flag', 'poster'),
 
-      createMovieRow('Indian Action Movies', indianAction?.results, 'fa-bolt', 'poster'),
-      createMovieRow('Indian Comedy Movies', indianComedy?.results, 'fa-laugh', 'poster')
-    ].join('');
+  createMovieRow('Top Rated Movies', topRated?.results, 'fa-trophy', 'poster'),
+
+  createMovieRow('TV Series', tvPopular?.results, 'fa-tv', 'poster'),
+
+  
+  createMovieRow('K-Drama Cream', kDrama?.results, 'fa-heart', 'poster'),
+
+  
+  createMovieRow('TV Shows', tvShows?.results, 'fa-desktop', 'poster'),
+
+  
+  createMovieRow('Indian OTT Series', indianOTT?.results, 'fa-play-circle', 'poster'),
+
+  
+  createMovieRow('Indian TV Series', indianTV?.results, 'fa-broadcast-tower', 'poster'),
+
+  createMovieRow('Indian Action Movies', indianAction?.results, 'fa-bolt', 'poster'),
+
+  createMovieRow('Indian Comedy Movies', indianComedy?.results, 'fa-laugh', 'poster')
+].join('');
 
   } catch (error) {
     console.error('Failed to load content:', error);
@@ -2563,11 +2776,10 @@ async function loadHomeContent() {
         state.currentDetails = details;
         
         const url = `#/${type}/${id}`;
-        
-        if (pushState) {
+
+if (pushState) {
   history.pushState({ type, id }, '', url);
 }
-
         
         renderDetails(details, type);
         
@@ -3048,35 +3260,35 @@ async function loadHomeContent() {
 
     // ==================== SHARE ====================
     async function shareItem(id, type, title) {
-      const slug = createSlug(title, id);
-      const url = `${window.location.origin}/#/${type}/${slug}`;
-      
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: `${title} - StreamFlix`,
-            text: `Check out ${title} on StreamFlix!`,
-            url: url
-          });
-        } catch (error) {
-          if (error.name !== 'AbortError') {
-            copyToClipboard(url);
-          }
-        }
-      } else {
+  const base = window.location.origin + window.location.pathname;
+  const url = `${base}#/${type}/${id}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `${title} - StreamFlix`,
+        text: `Check out ${title} on StreamFlix!`,
+        url: url
+      });
+    } catch (error) {
+      if (error.name !== 'AbortError') {
         copyToClipboard(url);
       }
     }
+  } else {
+    copyToClipboard(url);
+  }
+}
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast('Link copied to clipboard!', 'success');
-      }).catch(() => {
-        showToast('Failed to copy link', 'error');
-      });
-    }
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Link copied to clipboard!', 'success');
+  }).catch(() => {
+    showToast('Failed to copy link', 'error');
+  });
+}
 
-    // ==================== HEADER ====================
+    // ==================== HEADER SCROLL ====================
     function handleScroll() {
       const header = document.getElementById('header');
       header.classList.toggle('scrolled', window.scrollY > 50);
@@ -3085,93 +3297,124 @@ async function loadHomeContent() {
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     // ==================== DEEP LINKING ====================
-    function handleDeepLink() {
-  const hash = window.location.hash || '';
-  if (hash.startsWith('#/movie/') || hash.startsWith('#/tv/')) {
-    const parts = hash.replace('#/', '').split('/');
-    const type = parts[0]; 
-    const slug = parts[1];
-    const id = parseSlug(slug);
+    
+function handleDeepLink() {
+  const hash = location.hash; // #/movie/550
 
-    if (id) {
-      navigateTo('details', false); 
-      openDetails(id, type, false); 
-      return true;
-    }
+  if (!hash || hash === '#/' || hash === '#') {
+    navigateTo('home', false);
+    return true;
   }
 
-  
-  if (hash === '#/search') {
+  const parts = hash.replace('#/', '').split('/');
+  const type = parts[0];
+  const id = parseInt(parts[1], 10);
+
+  if ((type === 'movie' || type === 'tv') && id) {
+    openDetails(id, type, false);
+    return true;
+  }
+
+  if (type === 'search') {
     navigateTo('search', false);
     return true;
   }
 
-  
-  if (hash === '#/bookmarks') {
+  if (type === 'bookmarks') {
     navigateTo('bookmarks', false);
     return true;
   }
 
-  
-  if (hash === '#/settings') {
+  if (type === 'settings') {
     navigateTo('settings', false);
     return true;
   }
 
-  
   navigateTo('home', false);
-  return false;
+  return true;
 }
+        
+        
 
     // ==================== INITIALIZATION ====================
-async function init() {
- 
-  if (state.themeColor && state.themeColor !== 'red') {
-    setThemeColor(state.themeColor);
-  }
-
-  
-  document.getElementById('headerAvatar').textContent =
-    state.profileName.charAt(0).toUpperCase();
-
-  
-  
-  if (location.hash) {
-    handleDeepLink();
-
-    setTimeout(() => {
-      document.getElementById('loadingOverlay').classList.add('hide');
-      document.body.classList.remove('no-scroll');
-    }, 500);
-
-    return; 
-  }
-
-  
+    async function init() {
+      if (state.themeColor && state.themeColor !== 'red') {
+        setThemeColor(state.themeColor);
+      }
+      
+      document.getElementById('headerAvatar').textContent = state.profileName.charAt(0).toUpperCase();
+      
+      
+      
+if (location.hash) {
+  handleDeepLink();
+} else {
   await loadHomeContent();
   navigateTo('home', false);
+}
+      
+      setTimeout(showTelegramCard, 3000);
+      setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.add('hide');
+        document.body.classList.remove('no-scroll');
+      }, 500);
+    }
 
-  setTimeout(() => {
-    document.getElementById('loadingOverlay').classList.add('hide');
-    document.body.classList.remove('no-scroll');
-  }, 500);
+    document.addEventListener('DOMContentLoaded', init);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const player = document.getElementById('playerModal');
+        if (player.classList.contains('active')) {
+          closePlayer();
+        }
+      }
+    });
+    
+    // ==================== TELEGRAM POPUP ====================
+function showTelegramCard() {
+  if (localStorage.getItem('telegram_joined')) return;
+  document.getElementById('telegramOverlay').classList.add('active');
 }
 
+function closeTelegram() {
+  document.getElementById('telegramOverlay').classList.remove('active');
+  localStorage.setItem('telegram_joined', 'later');
+}
 
-document.addEventListener('DOMContentLoaded', init);
+function joinTelegram() {
+  localStorage.setItem('telegram_joined', 'yes');
+  window.open('https://t.me/YOUR_CHANNEL_USERNAME', '_blank');
+  closeTelegram();
+}
 
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    const player = document.getElementById('playerModal');
-    if (player.classList.contains('active')) {
-      closePlayer();
-    }
-  }
-});
+setTimeout(showTelegramCard, 3000);
   </script>
+  <!-- TELEGRAM JOIN POPUP -->
+<div class="telegram-overlay" id="telegramOverlay">
+  <div class="telegram-card">
+    
+    <div class="telegram-icon">
+      <i class="fab fa-telegram-plane"></i>
+    </div>
+
+    <div class="telegram-title">Join Our Telegram</div>
+
+    <div class="telegram-text">
+      Get latest movies, series updates & direct links instantly.
+    </div>
+
+    <div class="telegram-actions">
+      <button class="telegram-btn later" onclick="closeTelegram()">
+        <i class="fas fa-clock"></i> Later
+      </button>
+
+      <button class="telegram-btn join" onclick="joinTelegram()">
+        <i class="fab fa-telegram-plane"></i> Join
+      </button>
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
-
-
-
