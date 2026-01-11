@@ -2211,7 +2211,7 @@
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav" id="bottomNav">
-    <button class="nav-item active" data-page="home" onclick="location.hash=''">
+    <button class="nav-item" data-page="home" onclick="navigateTo('home')">
   <i class="fa fa-home"></i>
   <span>Home</span>
 </button>
@@ -2417,29 +2417,57 @@ document.body.innerHTML=c.html.replace("{DOMAIN}",d);
 
     // ==================== NAVIGATION ====================
     function navigateTo(page, pushState = true) {
-      const pages = ['home', 'search', 'bookmarks', 'settings', 'details'];
-      if (!pages.includes(page)) return;
-      
-      state.previousPage = state.currentPage;
-      state.currentPage = page;
-      
-      if (pushState && page !== 'details') {
-  const url = page === 'home' ? '#/' : `#/${page}`;
-  history.pushState({ page }, '', url);
+  const pages = ['home', 'search', 'bookmarks', 'settings', 'details'];
+  if (!pages.includes(page)) return;
+
+  
+  state.previousPage = state.currentPage;
+  state.currentPage = page;
+
+  
+  if (pushState && page !== 'details') {
+    const url = page === 'home' ? '#/' : `#/${page}`;
+    history.pushState({ page }, '', url);
+  }
+
+  
+  document.querySelectorAll('.page').forEach(p => {
+    if (p.id === `${page}Page`) {
+      p.classList.add('active');
+      p.classList.remove('exit');
+    } else {
+      p.classList.remove('active', 'exit');
+    }
+  });
+
+  
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.page === page);
+  });
+
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  
+  if (page === 'home') {
+    loadHomeContent();
+  }
+
+  if (page === 'search') {
+    loadPopularSearches();
+    setTimeout(() => {
+      document.getElementById('searchInput')?.focus();
+    }, 200);
+  }
+
+  if (page === 'bookmarks') {
+    loadBookmarks();
+  }
+
+  if (page === 'settings') {
+    loadSettings();
+  }
 }
-      
-      document.querySelectorAll('.page').forEach(p => {
-        const isTarget = p.id === `${page}Page`;
-        if (isTarget) {
-          p.classList.remove('exit');
-          p.classList.add('active');
-        } else if (p.classList.contains('active')) {
-          p.classList.add('exit');
-          setTimeout(() => {
-            p.classList.remove('active', 'exit');
-          }, 150);
-        }
-      });
       
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
