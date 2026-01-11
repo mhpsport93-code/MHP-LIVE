@@ -3314,12 +3314,12 @@ function copyToClipboard(text) {
 function handleDeepLink() {
   const hash = location.hash; // #/movie/550
 
-  if (!hash || hash === '#/' || hash === '#') {
+  if (!hash || hash === '/' || hash === '#') {
     navigateTo('home', false);
     return true;
   }
 
-  const parts = hash.replace('#/', '').split('/');
+  const parts = hash.replace('/', '').split('/');
   const type = parts[0];
   const id = parseInt(parts[1], 10);
 
